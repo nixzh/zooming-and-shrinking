@@ -1,0 +1,59 @@
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <string>
+#include <math.h>
+using namespace std;
+using namespace cv;
+
+int main(int argc, char* argv[])
+{   
+	int a,m,n;
+	char k[20];
+	cout << "请输入图片路径：" << endl;
+	cin.getline(k, 20);
+	Mat img1 = imread(k);//读取图片
+	
+	
+	if (img1.empty())
+	{
+		cout << "error";
+		return -1;
+	}
+	cout << "请输入倍数（放大为正，缩小为负）：" << endl;
+	cin >> a;
+	if (a == 0)
+	{
+		cout << "倍数不能为零，请重新输入："<<endl;
+		cin >> a;
+	}
+	if (a < 0)//图片缩小处理
+	{
+		a = abs(a);
+		m = floor(img1.rows / a);
+		n = floor(img1.cols / a);
+		Mat img2(m, n, CV_8UC1);
+		Mat img3(m, n, CV_8UC1);
+		Mat img4(m, n, CV_8UC1);
+		resize(img1, img2, img2.size(), 0, 0, 0);//最近邻内插
+		resize(img1, img3, img3.size(), 0, 0, 1);//双线性内插
+		resize(img1, img4, img4.size(), 0, 0, 2);//双三次内插
+		imwrite("F://shrink2-3-1.bmp", img2);
+		imwrite("F://shrink2-3-2.bmp", img3);
+		imwrite("F://shrink2-3-3.bmp", img4);
+	}
+	else//图片放大处理
+	{
+		m = floor(img1.rows * a);
+		n = floor(img1.cols * a);
+		Mat img2(m, n, CV_8UC1);
+		Mat img3(m, n, CV_8UC1);
+		Mat img4(m, n, CV_8UC1);
+		resize(img1, img2, img2.size(), 0, 0, 0);//最近邻内插
+		resize(img1, img3, img3.size(), 0, 0, 1);//双线性内插
+		resize(img1, img4, img4.size(), 0, 0, 2);//双三次内插
+		imwrite("F://zoom2-3-1.bmp", img2);
+		imwrite("F://zoom2-3-2.bmp", img3);
+		imwrite("F://zoom2-3-3.bmp", img4);
+	}
+
+}
